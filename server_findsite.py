@@ -18,11 +18,10 @@ Read about it online.
 import json
 import os
 
-from flask import (Flask, Response, g, redirect, render_template, request,
-                   session, url_for)
+from flask import (Flask, Response, flash, g, redirect, render_template,
+                   request, session, url_for)
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
-from flask import Flask, flash, request, render_template, g, redirect, url_for, Response, session
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'findsites')
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -189,7 +188,7 @@ def index():
 def add_appo(site_id):
   date = request.form['date']
   time = request.form['time']
-  user_id = 5
+  user_id = session['user_id']
   vaccine_id = request.form['v_type']
 
   cmd = 'INSERT INTO appointment VALUES ((select max(appoint_id)+1 from appointment),:date, :time, :vaccine_id, :user_id, :site_id)';
