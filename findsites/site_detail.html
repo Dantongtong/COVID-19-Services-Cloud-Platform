@@ -1,0 +1,223 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+  <style>
+    body {
+      font-size: 15pt;
+      font-family: arial;
+    }
+
+    dt {
+      display: block;
+    }
+
+    .demo {
+      border: 1px none #C0C0C0;
+      border-collapse: collapse;
+      padding: 5px;
+    }
+
+    .demo caption {
+      text-align: left;
+    }
+
+    .demo th {
+      border: 1px none #C0C0C0;
+      padding: 5px;
+      background: #F0F0F0;
+    }
+
+    .demo td {
+      border: 1px none #C0C0C0;
+      padding: 5px;
+    }
+
+    .checked {
+      color: orange;
+    }
+
+    div.stars {
+      width: 270px;
+      display: inline-block;
+    }
+
+    input.star {
+      display: none;
+    }
+
+    label.star {
+      float: right;
+      padding: 10px;
+      font-size: 36px;
+      color: #444;
+      transition: all .2s;
+    }
+
+    input.star:checked~label.star:before {
+      content: '\f005';
+      color: #FD4;
+      transition: all .25s;
+    }
+
+    input.star-5:checked~label.star:before {
+      color: #FE7;
+      text-shadow: 0 0 20px #952;
+    }
+
+    input.star-1:checked~label.star:before {
+      color: #F62;
+    }
+
+    label.star:hover {
+      transform: rotate(-15deg) scale(1.3);
+    }
+
+    label.star:before {
+      content: '\f006';
+      font-family: FontAwesome;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>{{rows[0]['name']}} </h1>
+  <div>{{rows[0]['address']}}<br></div>
+  {% if rows[0]['website']!='' %}
+  <a href={{rows[0]['website']}}>Website </a>
+  {% endif %}
+  <div>Call: {{rows[0]['call']}}</div>
+  <br>
+
+  <form method="POST" action="/appointment">
+    <input type="submit" value="Make an appointment">
+  </form>
+  <br>
+
+  <h2>Vaccination</h2>
+  {% if more1[0] %}
+  <div>
+    <dt>Walkin</dt>
+    <dd>{{more1[1]['Walkin']}}</dd>
+    <dt>Insurance</dt>
+    <dd>{{more1[1]['Insurance']}}</dd>
+  </div>
+
+  <table class="demo">
+    <caption>Vaccines Provided at This Location</caption>
+    <tbody>
+      {% for v in vacc %}
+      <tr>
+        <td>&nbsp;{{v['brand']}}</td>
+        <td>{{v['in_stock']}}</td>
+        <td>Last updated at {{v['updated_date']}}&nbsp;</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div>{{more1[1]}}
+  </div>
+  {% endif %}
+
+  <br>
+
+  <h2>COVID-19 Testing</h2>
+  {% if more2[0] %}
+  <div>
+    <dt>Rapid Test</dt>
+    <dd>{{more2[1]['rapid']}}</dd>
+    <dt>PCR Test</dt>
+    <dd>{{more2[1]['pcr']}}</dd>
+  </div>
+  {% else %}
+  <div>{{more2[1]}}
+  </div>
+  {% endif %}
+
+  <br>
+
+  <h2>Antibody Testing</h2>
+  {% if more3[0] %}
+  <div>
+    <dt>PCR Test (Quantitative)</dt>
+    <dd>{{more3[1]['pcr']}}</dd>
+    <dt>Kit Test (Qualitative)</dt>
+    <dd>{{more3[1]['kit']}}</dd>
+  </div>
+  {% else %}
+  <div>{{more3[1]}}
+  </div>
+  {% endif %}
+
+  <br>
+
+  <h2>Open Hour</h2>
+  <table class="demo">
+    <tbody>
+      {% for h in hour %}
+      <tr>
+        <td>&nbsp;{{h['weekday']}}</td>
+        <td>{{h['open']}}-{{h['close']}}&nbsp;</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <br>
+
+  <h2>Comments</h2>
+  <form method="POST" action={{ url_for('add_comment',site_id=site_id) }}>
+    <p>
+    <label for="comment">Write a new comment:</label><br>
+    <label for="comment">Service:</label>
+    <select name="service_type">
+      <option value="Vaccination" selected>Vaccination</option>
+      <option value="COVID-19 testing">COVID-19 testing</option>
+      <option value="Antibody Testing" required>Antibody Testing</option>
+    </select> <br>
+
+    <div class="stars">
+        <label for="star"> Rate your experience:</label><br>
+        <input class="star star-5" id="star-5" type="radio" name="star" value="5" />
+        <label class="star star-5" for="star-5"></label>
+        <input class="star star-4" id="star-4" type="radio" name="star" value="4" />
+        <label class="star star-4" for="star-4"></label>
+        <input class="star star-3" id="star-3" type="radio" name="star" value="3" />
+        <label class="star star-3" for="star-3"></label>
+        <input class="star star-2" id="star-2" type="radio" name="star" value="2" />
+        <label class="star star-2" for="star-2"></label>
+        <input class="star star-1" id="star-1" type="radio" name="star" value="1" />
+        <label class="star star-1" for="star-1"></label>
+    </div>
+    <br>
+
+    <textarea rows="5" cols="60" name="comment"></textarea>
+    <br>
+
+    <input type="submit" value="Comment">
+    </p>
+  </form>
+  <br>
+  <div>
+    {% for c in comment %}
+    <header>
+      <h4>{{c['rater']}}</h4>
+      <p>Service Type: {{c['service']}}</p>
+      {% for i in range(c['star']) %}
+      <span class="fa fa-star checked"></span>
+      {% endfor %}
+      {% for i in range(5-c['star']) %}
+      <span class="fa fa-star"></span>
+      {% endfor %}
+    </header>
+    <p>{{c['content']}}</p>
+    <hr>
+    {% endfor %}
+  </div>
+  <br>
+
+</body>
+
+</html>

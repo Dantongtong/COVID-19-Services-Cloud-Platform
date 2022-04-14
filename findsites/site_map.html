@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Site_map</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
+.mySlides {display: none}
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+</style>
+</head>
+<body class="w3-content w3-border-left w3-border-right" onload="load_filter()">
+
+<!-- Sidebar/menu -->
+<nav class="w3-sidebar w3-light-grey w3-collapse w3-top" style="z-index:3;width:260px" id="mySidebar">
+  <div class="w3-container w3-display-container w3-padding-16">
+    <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-transparent w3-display-topright"></i>
+    <h3>COVID-19 Sites</h3>
+    <h3>near {{zip}} </h3>
+    <hr>
+
+    <form method="POST" action="/filter_bar">
+    
+    
+    <p>Service Type: <br>
+      
+      <label><input type="checkbox" name="service" id="vacc" value="vacc"> Vaccination </label> <br>
+      <label><input type="checkbox" name="service" id="test" value="test"> Covid-19 Testing</label> <br>
+      <label><input type="checkbox" name="service" id="anti" value="anti"> Covid-19 Antibody Testing</label>
+    </p>
+
+    <p>Vaccine type:<br>
+      <label><input type="checkbox" name="supply" id="pfizer" value="pfizer"> Pfizer-BioNTech </label> <br>
+      <label><input type="checkbox" name="supply" id="moderna" value="moderna"> Moderna</label> <br>
+      <label><input type="checkbox" name="supply" id="jj" value="jj"> Johnson & Johnson/Janssen</label>
+    </p>
+    
+    <p>Vaccination Options:<br>
+      <label><input type="checkbox" name="vacc" id="walk_in" value="walk_in"> Walkins Accepted </label> <br>
+      <label><input type="checkbox" name="vacc" id="insurance" value="insurance"> Insurance Accepted</label> <br>
+    </p>
+    
+    <p>Covid testing Options:<br>
+      <label><input type="checkbox" name="test" id="rapid" value="rapid"> Rapid Test </label> <br>
+      <label><input type="checkbox" name="test" id="PCR" value="PCR"> PCR Test</label> <br>
+    </p>
+    
+    <p>Antibody testing Options:<br>
+      <label><input type="checkbox" name="anti" id="PCR_test" value="PCR_test"> Quantitative results </label> <br>
+      <label><input type="checkbox" name="anti" id="kit_test" value="kit_test"> Qualitative results</label> <br>
+    </p>
+    
+      <p><button class="w3-button w3-block w3-green w3-left-align" type="submit"><i class="fa fa-search w3-margin-right"></i> Search Sites</button></p>
+    </form>
+    
+  </div>
+</nav>
+
+<!-- Top menu on small screens -->
+<header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+  <span class="w3-bar-item">COVID-19 Sites</span>
+  <a href="javascript:void(0)" class="w3-right w3-bar-item w3-button" onclick="w3_open()"><i class="fa fa-bars"></i></a>
+</header>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main w3-white" style="margin-left:260px">
+
+  <!-- Push down content on small screens -->
+  <div class="w3-hide-large" style="margin-top:80px"></div>
+  
+  <!-- List column -->
+  <div class="column" id="list">
+  <h2 class="w3-text-green">Sites</h2>
+  <div class="w3-container" id="site_list">
+    <ol>
+      {% for item in rows %}
+      <li>
+        <a href='{{ url_for('site_detail',site_id=item['site_id']) }}'><h6>{{item['name']}}</h6></a>
+        <div>{{item['address']}}<br></div>
+	  {% if item['website']!='' %}
+      <a class="w3-button w3-theme w3-hover-white" href={{item['website']}}>Website</a>
+	  {% else %}
+	  <a class="w3-button w3-theme w3-hover-white">Website</a>
+	  {% endif %}
+        <div>Call: {{item['call']}}<br></div>
+      </li>
+      <hr>
+      {% endfor %}
+    </ol>
+  </div>
+  </div>
+  
+  <div class="column" id="map">
+  map here
+  </div>
+
+<!-- End page content -->
+</div>
+
+
+<script>
+// Script to open and close sidebar when on tablets and phones
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+  document.getElementById("myOverlay").style.display = "block";
+}
+ 
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+  document.getElementById("myOverlay").style.display = "none";
+}
+
+window.appConfig = {
+	status: {{status|safe}}
+}
+
+function load_filter() {
+  var id = window.appConfig.status;
+  id.forEach((item)=>{
+  document.getElementById(item).checked = true;})
+}
+
+</script>
+
+</body>
+</html>
