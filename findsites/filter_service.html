@@ -7,10 +7,14 @@
 </style>
 
 <body>
+  <form method="POST" action="/logout">
+  <input type="submit" value="Logout"><br>
+  </form>
+
   <h1>Find COVID-19 Service Site</h1>
 
   <form method="POST" action="/filter_service">
-    <p>5-digit Zip Code: <input type="text" name="zip" required pattern="[0-9]{5}"></p>
+    <p>5-digit Zip Code: <input type="text" name="zip" required pattern="[0-9]{5}" placeholder="E.g. 10032"></p>
     <p>Service Type: <br>
       
       <label><input type="checkbox" id="service" name="vacc"> Vaccination </label> <br>

@@ -19,7 +19,7 @@ import os
 import json
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
-from flask import Flask, request, render_template, g, redirect, url_for, Response, session
+from flask import Flask, flash, request, render_template, g, redirect, url_for, Response, session
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'findsites')
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -197,7 +197,7 @@ def filter_service():
 def site_map():
     zip = session.get('zip',None)
     new_filter = session.get('new_filter',None)
-    print(new_filter)
+    print(zip,new_filter)
     
     if new_filter==None:
         serv_id = session.get('service',None)
@@ -239,10 +239,12 @@ def site_map():
     if "anti" in serv_id:
         for f in anti:
             filter.append('antibody_testing.%s = \'T\' ' % f)
-    filter = "AND ".join(filter)
     
     if len(filter) != 0:
+        filter = "AND ".join(filter)
         filter = "AND " + filter
+    else:
+        filter = ""
     print(filter)
 
     cmd = """
@@ -449,17 +451,31 @@ def add_comment(site_id):
 
 @app.route('/login', methods=['POST'])
 def login():
-    if request.form['psw'] == 'admin' and request.form['usrname'] == 'admin':
+    name = request.form['usrname']
+    print(name)
+    if request.form['psw'] == 'admin' and name == 'admin':
         session['logged_in'] = True
-    elif request.form['psw'] == 'user' and request.form['usrname'] == 'user':
+        session['user_id'] = 10086
+        
+    elif request.form['psw'] == 'user' and name == 'user':
         session['logged_in'] = True
+        cmd = """
+            SELECT user_id FROM users WHERE name = '%s'
+        """
+        cursor = g.conn.execute(cmd % str(name))
+        print(cmd % name)
+        user_id = cursor.mappings().all()
+        cursor.close()
+        print(user_id)
+        session['user_id'] = user_id
     else:
         flash('wrong password!')
     return redirect('/')
 
-@app.route("/logout")
+@app.route("/logout", methods=['POST'])
 def logout():
     session['logged_in'] = False
+    flash('Successfully loged out!')
     return redirect('/')
 
 @app.route("/signup")

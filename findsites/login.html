@@ -3,10 +3,10 @@
 <title>Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<body>
+<body onload="document.getElementById('user01').style.display='block'">
 
 <div class="w3-container">
-  <h2>W3.CSS Login Modal</h2>
+  <h2>Login Required</h2>
 
   <button onclick="document.getElementById('user01').style.display='block'" class="w3-button w3-green w3-large">Login</button>
 
@@ -27,10 +27,20 @@
           <button class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Login</button>
         </div>
       </form>
+      
+            {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 
       <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
         <button onclick="document.getElementById('user01').style.display='none'" type="button" class="w3-button w3-red">Cancel</button>
-        <button class="w3-right w3-padding w3-hide-small" onclick="document.getElementById('user01').style.display='none'; document.getElementById('sign01').style.display='block';"><a href="#">Sign Up</a></button>
+        <span class="w3-right w3-padding w3-hide-small" onclick="document.getElementById('user01').style.display='none'; document.getElementById('sign01').style.display='block';"><a href="#">Sign Up</a></span>
         <span class="w3-right w3-padding w3-hide-small" onclick="document.getElementById('user01').style.display='none'; document.getElementById('admin01').style.display='block';"><a href="#">Admin</a></span>
       </div>
     </div>
@@ -92,12 +102,6 @@
 
 </div>
 
-<script>
-function switch(tmp,id) {
-	document.getElementById(tmp).style.display='none';
-    document.getElementById(id).style.display='block';
-}
-</script>
             
 </body>
 </html>
