@@ -1,29 +1,49 @@
 <html>
+  <body>
+    <form method="POST" action="/search_appid">
+      <p>
+        please indicate your appointment_id: <input type="text" name="app_id" />
+        <input type="submit" value="Search" />
+      </p>
+      <div>
+        <div>user data:{{data}}</div>
+        <div>vaccine_id:{{data[3]}}</div>
+        <div>user_id:{{data[4]}}</div>
+        <div>site_id:{{data[5]}}</div>
+      </div>
+    </form>
+
+    <form method="POST" action="/search_user">
+      <p>
+        please indicate your user_id: <input type="text" name="user_id" />
+        <input type="submit" value="Search" />
+      </p>
+      <div>
+        <div>user info:{{info_user}}</div>
+        <div>user_id:{{info_user[0]}}</div>
+        <div>name:{{info_user[1]}}</div>
+        <div>dof:{{info_user[2]}}</div>
+        <div>address:{{info_user[3]}}</div>
+        <div>zip:{{info_user[4]}}</div>
+      </div>
+    </form>
+
+    <!-- <div>
+      {% for n in data %}
+      <div>{{n}}</div>
+      {% endfor %}
+    </div> -->
+
+    <p><a href="/another">Go to the other page</a></p>
+  </body>
+
   <style>
-    body{ 
+    body {
       font-size: 15pt;
       font-family: arial;
     }
   </style>
-
-
-<body>
-  <h1>Some famous Computer Scientists</h1>
-  <div>{{data}}</div>
-
-  <div>
-    {% for n in data %}
-    <div>{{n}}</div>
-    {% endfor %}
-  </div>
-
-<p><a href="/another">Go to the other page</a></p>
-
-<form method="POST" action="/add">
-<p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
-</form>
-
-</body>
-
-
+  <script>
+    var late = [];
+  </script>
 </html>
