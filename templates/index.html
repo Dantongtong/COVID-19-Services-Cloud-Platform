@@ -1,49 +1,40 @@
 <html>
   <body>
-    <form method="POST" action="/search_appid">
-      <p>
-        please indicate your appointment_id: <input type="text" name="app_id" />
-        <input type="submit" value="Search" />
-      </p>
-      <div>
-        <div>user data:{{data}}</div>
-        <div>vaccine_id:{{data[3]}}</div>
-        <div>user_id:{{data[4]}}</div>
-        <div>site_id:{{data[5]}}</div>
-      </div>
-    </form>
+    <h1>Appointment Scheduler</h1>
+    <div>
+      <h2>Make an appointment for vaccination</h2>
+      <form method="POST" action="/add_user">
+        <div>Enter your personal information</div>
+        <div>
+          Date of birth:
+          <input type="text" name="user_id" placeholder="mmddyy" />
+        </div>
+        <div>Name:<input type="text" name="name" /></div>
+        <div>Date of :<input type="date" name="dof" /></div>
+        <div>Address :<input type="text" name="address" /></div>
+        <div>zipcode:<input type="text" name="zipcode" /></div>
+        <input type="submit" value="Create" />
+      </form>
 
-    <form method="POST" action="/search_user">
-      <p>
-        please indicate your user_id: <input type="text" name="user_id" />
-        <input type="submit" value="Search" />
-      </p>
-      <div>
-        <div>user info:{{info_user}}</div>
-        <div>user_id:{{info_user[0]}}</div>
-        <div>name:{{info_user[1]}}</div>
-        <div>dof:{{info_user[2]}}</div>
-        <div>address:{{info_user[3]}}</div>
-        <div>zip:{{info_user[4]}}</div>
-      </div>
-    </form>
+      <form method="POST" action="/add_appo">
+        <div>Enter your avilable time</div>
+        <div>
+          Date of birth:
+          <input type="text" name="appoint_id" placeholder="mmddyy" />
+        </div>
+        <div>Date:<input type="date" name="date" /></div>
+        <div>Time:<input type="time" name="time" /></div>
+        <div>
+          Vaccine type:(1 is Moderna, 2 is Pfizer-BioNTech)<input
+            type="text"
+            name="v_type"
+          />
+        </div>
 
-    <!-- <div>
-      {% for n in data %}
-      <div>{{n}}</div>
-      {% endfor %}
-    </div> -->
-
-    <p><a href="/another">Go to the other page</a></p>
+        <div>site:<input type="text" name="site_id" /></div>
+        <input type="submit" value="Create" />
+      </form>
+    </div>
+    <p><a href="/another">Already have an appointment?</a></p>
   </body>
-
-  <style>
-    body {
-      font-size: 15pt;
-      font-family: arial;
-    }
-  </style>
-  <script>
-    var late = [];
-  </script>
 </html>

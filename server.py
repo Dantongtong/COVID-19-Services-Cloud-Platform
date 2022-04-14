@@ -91,13 +91,13 @@ def teardown_request(exception):
 #
 @app.route('/')
 def index():
-  context = dict(data = [], info_user = [])
-  return render_template("index.html", **context)
+  return render_template("index.html")
 
 
 @app.route('/another')
 def another():
-  return render_template("anotherfile.html")
+  context = dict(data = [], info_user = [])
+  return render_template("another.html", **context)
 
 
 # Example of adding new data to the database
@@ -106,6 +106,29 @@ def add():
   name = request.form['name']
   cmd = 'INSERT INTO test(name) VALUES (:name1)';
   g.conn.execute(text(cmd), name1 = name);
+  return redirect('/')
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+  name = request.form['name']
+  user_id = request.form['user_id']
+  dof = request.form['dof']
+  address = request.form['address']
+  zipcode = request.form['zipcode']
+  cmd = 'INSERT INTO users VALUES (:user_id, :name, :dof, :address, :zipcode)';
+  g.conn.execute(text(cmd), user_id = user_id, name = name, dof = dof, address= address, zipcode = zipcode);
+  return redirect('/')
+
+@app.route('/add_appo', methods=['POST'])
+def add_appo():
+  appoint_id = request.form['appoint_id']
+  date = request.form['date']
+  time = request.form['time']
+  user_id = request.form['appoint_id']
+  vaccine_id = request.form['v_type']
+  site_id = request.form['site_id']
+  cmd = 'INSERT INTO appointment VALUES (:appoint_id, :date, :time, :vaccine_id, :user_id, :site_id)';
+  g.conn.execute(text(cmd), appoint_id = appoint_id, date = date, time = time, vaccine_id = vaccine_id, user_id= user_id, site_id = site_id);
   return redirect('/')
 
 @app.route('/search_appid', methods = ['POST'])
@@ -118,7 +141,7 @@ def search_appid():
     info.append(result) 
   cursor.close()
   context1 = dict(data = info[0], info_user = [])
-  return render_template("index.html", **context1)
+  return render_template("another.html", **context1)
 
 @app.route('/search_user', methods = ['POST'])
 def search_user():
@@ -131,7 +154,7 @@ def search_user():
   cursor.close()
   
   context2 = dict(info_user = info_user[0], data = [])
-  return render_template("index.html", **context2)
+  return render_template("another.html", **context2)
 
 
 @app.route('/login')
