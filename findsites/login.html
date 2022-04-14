@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<title>Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<body>
+
+<div class="w3-container">
+  <h2>W3.CSS Login Modal</h2>
+
+  <button onclick="document.getElementById('user01').style.display='block'" class="w3-button w3-green w3-large">Login</button>
+
+  <div id="user01" class="w3-modal">
+    <div class="w3-modal-content w3-card-4" style="max-width:600px">
+  
+      <div class="w3-center"><br>
+        <span onclick="document.getElementById('user01').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+        <img src={{url_for('static', filename="img_avatar4.png")}} alt="Avatar" style="width:30%" class="w3-circle w3-margin-top">
+      </div>
+
+      <form class="w3-container" method="POST" action="/login">
+        <div class="w3-section">
+          <label><b>Username</b></label>
+          <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter Username" name="usrname" required>
+          <label><b>Password</b></label>
+          <input class="w3-input w3-border" type="text" placeholder="Enter Password" name="psw" required>
+          <button class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Login</button>
+        </div>
+      </form>
+
+      <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+        <button onclick="document.getElementById('user01').style.display='none'" type="button" class="w3-button w3-red">Cancel</button>
+        <button class="w3-right w3-padding w3-hide-small" onclick="document.getElementById('user01').style.display='none'; document.getElementById('sign01').style.display='block';"><a href="#">Sign Up</a></button>
+        <span class="w3-right w3-padding w3-hide-small" onclick="document.getElementById('user01').style.display='none'; document.getElementById('admin01').style.display='block';"><a href="#">Admin</a></span>
+      </div>
+    </div>
+  </div>
+      
+      
+  <div id="admin01" class="w3-modal">
+    <div class="w3-modal-content w3-card-4" style="max-width:600px">
+  
+      <div class="w3-center"><br>
+        <span onclick="document.getElementById('admin01').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+        <img src={{url_for('static', filename="img_avatar4.png")}} alt="Avatar" style="width:30%" class="w3-circle w3-margin-top">
+      </div>
+
+      <form class="w3-container" method="POST" action="/login">
+        <div class="w3-section">
+          <label><b>Admin</b></label>
+          <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter Username" name="usrname" required>
+          <label><b>Password</b></label>
+          <input class="w3-input w3-border" type="text" placeholder="Enter Password" name="psw" required>
+          <button class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Login</button>
+        </div>
+      </form>
+
+      <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+        <button onclick="document.getElementById('admin01').style.display='none'" type="button" class="w3-button w3-red">Cancel</button>
+        <span class="w3-right w3-padding w3-hide-small" onclick="document.getElementById('admin01').style.display='none'; document.getElementById('user01').style.display='block';"><a href="#">User</a></span>
+      </div>
+    </div>
+  </div>
+      
+      
+  <div id="sign01" class="w3-modal">
+    <div class="w3-modal-content w3-card-4" style="max-width:600px">
+  
+      <div class="w3-center"><br>
+        <span onclick="document.getElementById('sign01').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+        <h3>Sign Up</h3>
+        <h2><strong>Function Not Developed Yet</strong></h2>
+      </div>
+
+      <form class="w3-container" method="POST" action="/signup">
+        <div class="w3-section">
+          <label><b>Your Username</b></label>
+          <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter Username" name="usrname" required>
+          <label><b>Your Password</b></label>
+          <input class="w3-input w3-border" type="text" placeholder="Enter Password" name="psw" required>
+          <button class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Sign Up Now</button>
+        </div>
+      </form>
+
+      <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+        <button onclick="document.getElementById('sign01').style.display='none'" type="button" class="w3-button w3-red">Cancel</button>
+        <span class="w3-right w3-padding w3-hide-small" onclick="document.getElementById('sign01').style.display='none'; document.getElementById('user01').style.display='block';"><a href="#">Already Have An Account</a></span>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<script>
+function switch(tmp,id) {
+	document.getElementById(tmp).style.display='none';
+    document.getElementById(id).style.display='block';
+}
+</script>
+            
+</body>
+</html>
+

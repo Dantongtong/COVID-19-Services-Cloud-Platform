@@ -1,0 +1,42 @@
+<html>
+<style>
+  body {
+    font-size: 15pt;
+    font-family: arial;
+  }
+</style>
+
+<body>
+  <h1>COVID-19 Sites near {{zip}} </h1>
+  <div>Service selected: {{service}}</div>
+  <br>
+
+  <div>SQL Command Runned: <br>
+    {{cmd}}
+  </div>
+
+  <br>
+
+  <d>
+    Sites filtered: <br>
+    <ol>
+      {% for item in rows %}
+      <li>
+        <a href='{{ url_for('site_detail',site_id=item['site_id']) }}'>{{item['name']}}</a>
+        <div>{{item['address']}}<br></div>
+	  {% if item['website']!='' %}
+        <a href={{item['website']}}>Website </a>
+	  {% else %}
+	  <div>Website</div>
+	  {% endif %}
+        <div>Call: {{item['call']}}<br></div>
+      </li>
+      {% endfor %}
+    </ol>
+    </div>
+
+    </form>
+
+</body>
+
+</html>
