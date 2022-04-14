@@ -15,11 +15,13 @@ A debugger such as "pdb" may be helpful for debugging.
 Read about it online.
 """
 
-import os
 import json
+import os
+
+from flask import (Flask, Response, g, redirect, render_template, request,
+                   session, url_for)
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
-from flask import Flask, request, render_template, g, redirect, url_for, Response, session
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'findsites')
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -180,6 +182,38 @@ def index():
 # notice that the functio name is another() rather than index()
 # the functions for each app.route needs to have different names
 #
+
+#Make an appointment
+@app.route('/add_appo/<site_id>', methods=['POST'])
+def add_appo(site_id):
+  date = request.form['date']
+  time = request.form['time']
+  user_id = 5
+  vaccine_id = request.form['v_type']
+
+  cmd = 'INSERT INTO appointment VALUES ((select max(appoint_id)+1 from appointment),:date, :time, :vaccine_id, :user_id, :site_id)';
+  g.conn.execute(text(cmd), date = date, time = time, vaccine_id = vaccine_id, user_id= user_id, site_id = site_id);
+  return redirect(url_for('site_detail',site_id=site_id))
+
+def add_comment(site_id):
+    ##how to get user info?
+    print( request.form )
+    comment = request.form['comment']
+    service = request.form['service_type']
+    star = request.form['star']
+    print( comment, service, star )
+    
+    ##??? how to get user info
+    user = 5
+    cmd1 = """
+        DROP TABLE if EXISTS newid;
+        CREATE TABLE newid AS ( SELECT max(comment_id)+1 AS new FROM comments);
+        INSERT INTO comments VALUES ((select * from newid), :star,:comment,:service);
+        INSERT INTO evaluate VALUES ((select * from newid), :user, :site_id);
+    """
+    print(cmd1)
+    g.conn.execute( text(cmd1), star=star,comment=comment,service=service,user=str(user),site_id=site_id ) 
+    return redirect(url_for('site_detail',site_id=site_id))
 
 # Filter the service type for sites
 @app.route('/filter_service', methods=['POST'])
