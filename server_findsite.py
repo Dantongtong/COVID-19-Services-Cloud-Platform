@@ -410,7 +410,7 @@ def add_comment(site_id):
     print( comment, service, star )
     
     ##??? how to get user info
-    user = 5
+    user = session.get('user_id')
     cmd1 = """
         DROP TABLE if EXISTS newid;
         CREATE TABLE newid AS ( SELECT max(comment_id)+1 AS new FROM comments);
