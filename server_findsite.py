@@ -99,8 +99,8 @@ def index():
     session['new_filter'] = None
     if not session.get('logged_in'):
         return render_template('login.html')
-    elif session.get('user_id')==10086:
-        return render_template("admin.html")
+#     elif session.get('user_id')==10086:
+#         return render_template("admin.html")
     else:
         user_id = session.get('user_id')
         

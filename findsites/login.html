@@ -30,7 +30,7 @@
         </div>
       </form>
       
-{% with messages = get_flashed_messages() %}
+            {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>
     {% for message in messages %}
@@ -42,8 +42,8 @@
 
       <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
         <button onclick="document.getElementById('user01').style.display='none'" type="button" class="w3-button w3-red">Cancel</button>
-        <span class="w3-right w3-padding w3-hide-small" onclick="document.getElementById('user01').style.display='none'; document.getElementById('sign01').style.display='block';"><a href="#">Sign Up</a></span>
-        <span class="w3-right w3-padding w3-hide-small" onclick="document.getElementById('user01').style.display='none'; document.getElementById('admin01').style.display='block';"><a href="#">Admin</a></span>
+<!--         <span class="w3-right w3-padding w3-hide-small" onclick="document.getElementById('user01').style.display='none'; document.getElementById('sign01').style.display='block';"><a href="#">Sign Up</a></span> -->
+<!--         <span class="w3-right w3-padding w3-hide-small" onclick="document.getElementById('user01').style.display='none'; document.getElementById('admin01').style.display='block';"><a href="#">Admin</a></span> -->
       </div>
     </div>
   </div>
