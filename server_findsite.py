@@ -417,10 +417,11 @@ def login():
         cmd = """
             SELECT user_id FROM users WHERE name = '%s'
         """
-        cursor = g.conn.execute(cmd % str(name))
+        #cursor = g.conn.execute(cmd % str(name))
         print(cmd % name)
-        user_id = cursor.mappings().all()
-        cursor.close()
+        #user_id = cursor.mappings().all()
+        #cursor.close()
+        user_id = 5
         print(user_id)
         session['user_id'] = user_id
     else:
