@@ -15,13 +15,11 @@ A debugger such as "pdb" may be helpful for debugging.
 Read about it online.
 """
 
-import json
 import os
-
-from flask import (Flask, Response, flash, g, redirect, render_template,
-                   request, session, url_for)
+import json
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
+from flask import Flask, flash, request, render_template, g, redirect, url_for, Response, session
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'findsites')
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -171,8 +169,13 @@ def index():
     session['new_filter'] = None
     if not session.get('logged_in'):
         return render_template('login.html')
+    elif session.get('user_id')==10086:
+        return render_template("admin.html")
     else:
-        return render_template("filter_service.html")
+        user_id = session.get('user_id')
+        cmd1 = 
+        
+        return render_template("user.html")
 
 #
 # This is an example of a different path.  You can see it at
@@ -183,36 +186,9 @@ def index():
 # the functions for each app.route needs to have different names
 #
 
-#Make an appointment
-@app.route('/add_appo/<site_id>', methods=['POST'])
-def add_appo(site_id):
-  date = request.form['date']
-  time = request.form['time']
-  user_id = session['user_id']
-  vaccine_id = request.form.getlist('vaccine_id')[0]
-
-  cmd = 'INSERT INTO appointment VALUES ((select max(appoint_id)+1 from appointment),:date, :time, :vaccine_id, :user_id, :site_id)';
-  g.conn.execute(text(cmd), date = date, time = time, vaccine_id = vaccine_id, user_id= user_id, site_id = site_id);
-  return redirect(url_for('site_detail',site_id=site_id))
-
-def add_comment(site_id):
-    ##how to get user info?
-    print( request.form )
-    comment = request.form['comment']
-    service = request.form['service_type']
-    star = request.form['star']
-    print( comment, service, star )
-    
-    user = session['user_id']
-    cmd1 = """
-        DROP TABLE if EXISTS newid;
-        CREATE TABLE newid AS ( SELECT max(comment_id)+1 AS new FROM comments);
-        INSERT INTO comments VALUES ((select * from newid), :star,:comment,:service);
-        INSERT INTO evaluate VALUES ((select * from newid), :user, :site_id);
-    """
-    print(cmd1)
-    g.conn.execute( text(cmd1), star=star,comment=comment,service=service,user=str(user),site_id=site_id ) 
-    return redirect(url_for('site_detail',site_id=site_id))
+@app.route('/filter')
+def filter():
+    return render_template("filter_service.html")
 
 # Filter the service type for sites
 @app.route('/filter_service', methods=['POST'])
@@ -453,7 +429,8 @@ def add_comment(site_id):
     star = request.form['star']
     print( comment, service, star )
     
-    user = session['user_id']
+    ##??? how to get user info
+    user = 5
     cmd1 = """
         DROP TABLE if EXISTS newid;
         CREATE TABLE newid AS ( SELECT max(comment_id)+1 AS new FROM comments);
@@ -494,11 +471,10 @@ def login():
         cmd = """
             SELECT user_id FROM users WHERE name = '%s'
         """
-        #cursor = g.conn.execute(cmd % str(name))
+        cursor = g.conn.execute(cmd % str(name))
         print(cmd % name)
-        #user_id = cursor.mappings().all()
-        #cursor.close()
-        user_id = 5
+        user_id = cursor.mappings().all()
+        cursor.close()
         print(user_id)
         session['user_id'] = user_id
     else:
