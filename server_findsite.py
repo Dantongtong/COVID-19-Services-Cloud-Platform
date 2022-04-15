@@ -189,7 +189,7 @@ def add_appo(site_id):
   date = request.form['date']
   time = request.form['time']
   user_id = session['user_id']
-  vaccine_id = request.form['v_type']
+  vaccine_id = request.form.getlist('vaccine_id')[0]
 
   cmd = 'INSERT INTO appointment VALUES ((select max(appoint_id)+1 from appointment),:date, :time, :vaccine_id, :user_id, :site_id)';
   g.conn.execute(text(cmd), date = date, time = time, vaccine_id = vaccine_id, user_id= user_id, site_id = site_id);
@@ -203,8 +203,7 @@ def add_comment(site_id):
     star = request.form['star']
     print( comment, service, star )
     
-    ##??? how to get user info
-    user = 5
+    user = session['user_id']
     cmd1 = """
         DROP TABLE if EXISTS newid;
         CREATE TABLE newid AS ( SELECT max(comment_id)+1 AS new FROM comments);
@@ -454,8 +453,7 @@ def add_comment(site_id):
     star = request.form['star']
     print( comment, service, star )
     
-    ##??? how to get user info
-    user = 5
+    user = session['user_id']
     cmd1 = """
         DROP TABLE if EXISTS newid;
         CREATE TABLE newid AS ( SELECT max(comment_id)+1 AS new FROM comments);

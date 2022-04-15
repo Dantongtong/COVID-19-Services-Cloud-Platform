@@ -94,12 +94,11 @@
   <form method="POST" action={{ url_for('add_appo',site_id=site_id) }}>
     <div>Available Date <input type="date" name="date" /></div>
     <div>Available Time <input type="time" name="time" /></div>
-    <div>
-      Vaccine type (1 is Moderna, 2 is Pfizer-BioNTech)<input
-        type="text"
-        name="v_type"
-      />
-    </div>
+    <p>Vaccine type:<br>
+      <label><input type="checkbox" name="vaccine_id" id="pfizer" value="1"> Pfizer-BioNTech </label> <br>
+      <label><input type="checkbox" name="vaccine_id" id="moderna" value="2"> Moderna</label> <br>
+      <label><input type="checkbox" name="vaccine_id" id="jj" value="0"> Johnson & Johnson/Janssen</label>
+    </p>
     <input type="submit" value="Make an appointment" />
   </form>
   <br>
