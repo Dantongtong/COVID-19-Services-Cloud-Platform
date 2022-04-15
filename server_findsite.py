@@ -17,6 +17,10 @@ Read about it online.
 
 import os
 import json
+from multiprocessing import context
+
+from flask import (Flask, Response, flash, g, redirect, render_template,
+                   request, session, url_for)
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
 from flask import Flask, flash, request, render_template, g, redirect, url_for, Response, session
@@ -90,81 +94,7 @@ def teardown_request(exception):
     pass
 
 
-#
-# @app.route is a decorator around index() that means:
-#   run index() whenever the user tries to access the "/" path using a GET request
-#
-# If you wanted the user to go to e.g., localhost:8111/foobar/ with POST or GET then you could use
-#
-#       @app.route("/foobar/", methods=["POST", "GET"])
-#
-# PROTIP: (the trailing / in the path is important)
-# 
-# see for routing: http://flask.pocoo.org/docs/0.10/quickstart/#routing
-# see for decorators: http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/
-#
 @app.route('/')
-# def index():
-#   """
-#   request is a special object that Flask provides to access web request information:
-
-#   request.method:   "GET" or "POST"
-#   request.form:     if the browser submitted a form, this contains the data in the form
-#   request.args:     dictionary of URL arguments e.g., {a:1, b:2} for http://localhost?a=1&b=2
-
-#   See its API: http://flask.pocoo.org/docs/0.10/api/#incoming-request-data
-#   """
-
-#   # DEBUG: this is debugging code to see what request looks like
-# #   print( request.args )
-#   session['new_filter'] = None
-
-
-#   #
-#   # example of a database query
-#   #
-# #   cursor = g.conn.execute("SELECT zip_code FROM site_located")
-# #   names = []
-# #   for result in cursor:
-# #     names.append(result['zip_code'])  # can also be accessed using result[0]
-# #   cursor.close()
-# #   print(names)
-
-#   #
-#   # Flask uses Jinja templates, which is an extension to HTML where you can
-#   # pass data to a template and dynamically generate HTML based on the data
-#   # (you can think of it as simple PHP)
-#   # documentation: https://realpython.com/blog/python/primer-on-jinja-templating/
-#   #
-#   # You can see an example template in templates/index.html
-#   #
-#   # context are the variables that are passed to the template.
-#   # for example, "data" key in the context variable defined below will be 
-#   # accessible as a variable in index.html:
-#   #
-#   #     # will print: [u'grace hopper', u'alan turing', u'ada lovelace']
-#   #     <div>{{data}}</div>
-#   #     
-#   #     # creates a <div> tag for each element in data
-#   #     # will print: 
-#   #     #
-#   #     #   <div>grace hopper</div>
-#   #     #   <div>alan turing</div>
-#   #     #   <div>ada lovelace</div>
-#   #     #
-#   #     {% for n in data %}
-#   #     <div>{{n}}</div>
-#   #     {% endfor %}
-#   #
-# #   context = dict(data = names)
-
-
-#   #
-#   # render_template looks in the templates/ folder for files.
-#   # for example, the below file reads template/index.html
-#   #
-#   return render_template("filter_service.html") # ,**context)
-
 def index():
     session['new_filter'] = None
     if not session.get('logged_in'):
@@ -177,18 +107,45 @@ def index():
         
         return render_template("user.html")
 
-#
-# This is an example of a different path.  You can see it at
-# 
-#     localhost:8111/another
-#
-# notice that the functio name is another() rather than index()
-# the functions for each app.route needs to have different names
-#
+@app.route('/appointment/<site_id>', methods=['POST'])
+def appointment(site_id):
+  context = dict(site_id = site_id)
+  return render_template("appointment.html",**context)
 
 @app.route('/filter')
 def filter():
     return render_template("filter_service.html")
+
+#Make an appointment
+@app.route('/add_appo/<site_id>', methods=['POST'])
+def add_appo(site_id):
+  date = request.form['date']
+  time = request.form['time']
+  user_id = session['user_id']
+  vaccine_id = request.form.getlist('vaccine_id')[0]
+
+  cmd = 'INSERT INTO appointment VALUES ((select max(appoint_id)+1 from appointment),:date, :time, :vaccine_id, :user_id, :site_id)';
+  g.conn.execute(text(cmd), date = date, time = time, vaccine_id = vaccine_id, user_id= user_id, site_id = site_id);
+  return redirect('/')
+
+def add_comment(site_id):
+    ##how to get user info?
+    print( request.form )
+    comment = request.form['comment']
+    service = request.form['service_type']
+    star = request.form['star']
+    print( comment, service, star )
+    
+    user = session['user_id']
+    cmd1 = """
+        DROP TABLE if EXISTS newid;
+        CREATE TABLE newid AS ( SELECT max(comment_id)+1 AS new FROM comments);
+        INSERT INTO comments VALUES ((select * from newid), :star,:comment,:service);
+        INSERT INTO evaluate VALUES ((select * from newid), :user, :site_id);
+    """
+    print(cmd1)
+    g.conn.execute( text(cmd1), star=star,comment=comment,service=service,user=str(user),site_id=site_id ) 
+    return redirect(url_for('site_detail',site_id=site_id))
 
 # Filter the service type for sites
 @app.route('/filter_service', methods=['POST'])
