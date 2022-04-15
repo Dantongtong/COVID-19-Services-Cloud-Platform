@@ -384,7 +384,7 @@ def site_detail(site_id):
         FROM evaluate E, comments C, users U
         WHERE E.site_id = %d AND E.comment_id=C.comment_id AND E.user_id=U.user_id
     """
-    cursor = g.conn.execute(cmd7 % site_id)
+    cursor = g.conn.execute(cmd7, site_id)
     comment = []
     for result in cursor:
         comment.append(dict(star = result['star'],
@@ -451,7 +451,7 @@ def login():
         cmd = """
             SELECT user_id FROM users WHERE name = '%s'
         """
-        cursor = g.conn.execute(cmd % str(name))
+        cursor = g.conn.execute(cmd , str(name))
         print(cmd % name)
         user_id = cursor.mappings().all()
         user_id = user_id[0]['user_id']
