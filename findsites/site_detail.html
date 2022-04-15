@@ -90,17 +90,10 @@
   <div>Call: {{rows[0]['call']}}</div>
   <br>
 
-  <h2>Appointment</h2>
-  <form method="POST" action={{ url_for('add_appo',site_id=site_id) }}>
-    <div>Available Date <input type="date" name="date" /></div>
-    <div>Available Time <input type="time" name="time" /></div>
-    <p>Vaccine type:<br>
-      <label><input type="checkbox" name="vaccine_id" id="pfizer" value="1"> Pfizer-BioNTech </label> <br>
-      <label><input type="checkbox" name="vaccine_id" id="moderna" value="2"> Moderna</label> <br>
-      <label><input type="checkbox" name="vaccine_id" id="jj" value="0"> Johnson & Johnson/Janssen</label>
-    </p>
-    <input type="submit" value="Make an appointment" />
+  <form method="POST" action={{ url_for('appointment',site_id=site_id) }}>
+    <button>Make An Appointment</button>
   </form>
+  
   <br>
 
   <h2>Vaccination</h2>
