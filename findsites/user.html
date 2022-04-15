@@ -9,6 +9,9 @@
   }
 
   table {
+    width:80%;
+    margin-left:auto;
+    margin-right:auto;
     border: 1px none #ffffff;
     border-collapse: collapse;
     padding: 5px;
@@ -23,7 +26,7 @@
 
   table td {
     border: 1px none #ffffff;
-    text-align: center;
+    text-align: left;
     padding: 5px;
     background: #ffffff;
     color: #313030;
@@ -54,27 +57,27 @@
         <span onclick="document.getElementById('profile').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
 
         <table>
-          <h6>User Profile</h6>
+          <h4><strong>User Profile</strong></h4>
           <tbody>
             <tr>
-              <td>&nbsp;User id</td>
-              <td>{{info[0]['user_id']}}&nbsp;</td>
+              <td>User id</td>
+              <td>{{info[0]['user_id']}}</td>
             </tr>
             <tr>
-              <td>&nbsp;User Name</td>
-              <td>{{info[0]['name']}}&nbsp;</td>
+              <td>User Name</td>
+              <td>{{info[0]['name']}}</td>
             </tr>
             <tr>
-              <td>&nbsp;Date of Birth</td>
-              <td>{{info[0]['dof']}}&nbsp;</td>
+              <td>Date of Birth</td>
+              <td>{{info[0]['dof']}}</td>
             </tr>
             <tr>
               <td>&nbsp;Address</td>
-              <td>{{info[0]['address']}}&nbsp;</td>
+              <td>{{info[0]['address']}}</td>
             </tr>
             <tr>
               <td>&nbsp;Zip</td>
-              <td>{{info[0]['zip']}}&nbsp;</td>
+              <td>{{info[0]['zip']}}</td>
             </tr>
           </tbody>
         </table>

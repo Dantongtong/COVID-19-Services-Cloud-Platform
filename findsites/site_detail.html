@@ -98,21 +98,26 @@
 
   <h2>Vaccination</h2>
   {% if more1[0] %}
-  <div>
-    <dt>Walkin</dt>
-    <dd>{{more1[1]['Walkin']}}</dd>
-    <dt>Insurance</dt>
-    <dd>{{more1[1]['Insurance']}}</dd>
-  </div>
-
+ <table class="demo">
+   <tbody>
+     <tr>
+    <td>Walkin</td>
+       <td>{{more1[1]['Walkin']}}</td>
+       <tr>
+    <td>Insurance</td>
+    <td>{{more1[1]['Insurance']}}</td>
+         <tr>
+     </tbody>
+  </table>
+  ------------------------------------------------------------------
   <table class="demo">
     <caption>Vaccines Provided at This Location</caption>
     <tbody>
       {% for v in vacc %}
       <tr>
-        <td>&nbsp;{{v['brand']}}</td>
+        <td>{{v['brand']}}</td>
         <td>{{v['in_stock']}}</td>
-        <td>Last updated at {{v['updated_date']}}&nbsp;</td>
+        <td>Last updated at {{v['updated_date']}}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -126,27 +131,38 @@
 
   <h2>COVID-19 Testing</h2>
   {% if more2[0] %}
-  <div>
-    <dt>Rapid Test</dt>
-    <dd>{{more2[1]['rapid']}}</dd>
-    <dt>PCR Test</dt>
-    <dd>{{more2[1]['pcr']}}</dd>
-  </div>
+  <table>
+    <tbody>
+      <tr>
+    <td>Rapid Test</td>
+    <td>{{more2[1]['rapid']}}</td>
+        </tr>
+      <tr>
+    <td>PCR Test</td>
+    <td>{{more2[1]['pcr']}}</td>
+    </tr>
+    </tbody>
+  </table>
   {% else %}
-  <div>{{more2[1]}}
-  </div>
+  <div>{{more2[1]}}</div>
   {% endif %}
 
   <br>
 
   <h2>Antibody Testing</h2>
   {% if more3[0] %}
-  <div>
-    <dt>PCR Test (Quantitative)</dt>
-    <dd>{{more3[1]['pcr']}}</dd>
-    <dt>Kit Test (Qualitative)</dt>
-    <dd>{{more3[1]['kit']}}</dd>
-  </div>
+  <table>
+    <tbody>
+      <tr>
+    <td>PCR Test (Quantitative)</td>
+    <td>{{more3[1]['pcr']}}</td>
+        </tr>
+      <tr>
+    <td>Kit Test (Qualitative)</td>
+    <td>{{more3[1]['kit']}}</td>
+        </tr>
+      <tbody>
+  </table>
   {% else %}
   <div>{{more3[1]}}
   </div>

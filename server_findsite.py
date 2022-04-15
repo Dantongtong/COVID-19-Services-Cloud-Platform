@@ -241,16 +241,18 @@ def site_map():
       FROM site S, site_located SL, %s
       WHERE S.site_id = SL.site_id AND SL.zip_code = '%s' AND (%s) %s
     """
-
-    cursor = g.conn.execute( cmd % (service_input, zip, serv_query, filter) )     #serv=service_input,zip=zip,serv_query=serv_query,filter=filter)
-    rows = cursor.mappings().all()
-#     rows = []
-#     for result in cursor:
-#     rows.append(dict(site_id=result['site_id'],
-#                      name=result['name'],
-#                      address=result['address'],
-#                      website=result['website'],
-#                      call=result['call']) )
+    
+    ###??? how to use safe insert without '' ###
+    cursor = g.conn.execute( cmd % (service_input, zip, serv_query, filter) )
+#     cursor = g.conn.execute( cmd, service_input=service_input, zip=zip, serv_query=serv_query, filter=filter )    
+#     rows = cursor.mappings().all()
+    rows = []
+    for result in cursor:
+        rows.append(dict(site_id=result['site_id'],
+                         name=result['name'],
+                         address=result['address'],
+                         website=result['website'],
+                         call=result['call']) )
     cursor.close()
     print(rows)
 
@@ -288,9 +290,12 @@ def site_detail(site_id):
 #                 LEFT OUTER JOIN antibody_testing AT ON S.site_id=AT.site_id )
 #         WHERE S.site_id=%d
 #     """
-    cmd1 = 'SELECT * FROM site WHERE site_id=%d'
-    cursor = g.conn.execute(cmd1 % site_id)
-    rows = cursor.mappings().all()
+    cmd1 = 'SELECT * FROM site WHERE site_id=%s'
+    cursor = g.conn.execute(cmd1, site_id)
+#     rows = cursor.mappings().all()
+    rows = []
+    for result in cursor:
+        rows.append(result)
 #     for result in cursor:
 #         print(result)
 #         rows = dict(site_id=result['site_id'],
@@ -304,9 +309,9 @@ def site_detail(site_id):
     cmd2 = """
         SELECT distinct *
         FROM vaccine_supply VS, vaccine V
-        WHERE VS.vaccine_id = V.vaccine_id AND VS.site_id = %d
+        WHERE VS.vaccine_id = V.vaccine_id AND VS.site_id = %s
     """
-    cursor = g.conn.execute(cmd2 % site_id)
+    cursor = g.conn.execute(cmd2, site_id)
     vacc = []
     for result in cursor:
         vacc.append(dict(brand=result['brand'],
@@ -317,7 +322,7 @@ def site_detail(site_id):
     
     cmd3 = """
         SELECT * FROM open_hour 
-        WHERE site_id = %d
+        WHERE site_id = %s
         ORDER BY 
           CASE
               WHEN weekday = 'Sunday' THEN 1
@@ -330,7 +335,7 @@ def site_detail(site_id):
          END ASC
         """
     
-    cursor = g.conn.execute(cmd3 % site_id)
+    cursor = g.conn.execute(cmd3, site_id)
     hour = []
     for result in cursor:
         hour.append(dict(weekday=result['weekday'],
@@ -339,8 +344,8 @@ def site_detail(site_id):
     cursor.close()
     print(hour)
     
-    cmd4 = 'SELECT * FROM vaccination_site WHERE site_id = %d'
-    cursor = g.conn.execute(cmd4 % site_id)
+    cmd4 = 'SELECT * FROM vaccination_site WHERE site_id = %s'
+    cursor = g.conn.execute(cmd4, site_id)
     more1=[]
     for result in cursor:
         more1 = dict(Walkin = "Walkins accepted" if result['walk_in']=="true" else "Walkins NOT accepted",
@@ -352,8 +357,8 @@ def site_detail(site_id):
         more1 = [True,more1]
     print(more1)
     
-    cmd5 = 'SELECT * FROM testing_site WHERE site_id = %d'
-    cursor = g.conn.execute(cmd5 % site_id)
+    cmd5 = 'SELECT * FROM testing_site WHERE site_id = %s'
+    cursor = g.conn.execute(cmd5, site_id)
     more2 = []
     for result in cursor:
         more2 = dict(rapid = '√' if result['rapid']=='T' else '×',
@@ -366,23 +371,26 @@ def site_detail(site_id):
     cursor.close()
     print(more2)
     
-    cmd6 = 'SELECT * FROM antibody_testing WHERE site_id = %d'
-    cursor = g.conn.execute(cmd6 % site_id)
-    more3 = cursor.mappings().all()
+    cmd6 = 'SELECT * FROM antibody_testing WHERE site_id = %s'
+    cursor = g.conn.execute(cmd6, site_id)
+    more3 = []
+    for result in cursor:
+        more3.append(result)
+    cursor.close()
+    
     if (more3==[]):
         more3 = [False, "Antibody testing not provided"]
     else:
-        for result in cursor:
+        for result in more3:
             more3 = dict(pcr = '√' if result['pcr_test']=='T' else '×',
                          kit = '√' if result['kit_test']=='T' else '×')
         more3 = [True, more3]
-    cursor.close()
     print(more3)
     
     cmd7 = """
         SELECT C.star, C.content, C.service_type, U.name
         FROM evaluate E, comments C, users U
-        WHERE E.site_id = %d AND E.comment_id=C.comment_id AND E.user_id=U.user_id
+        WHERE E.site_id = %s AND E.comment_id=C.comment_id AND E.user_id=U.user_id
     """
     cursor = g.conn.execute(cmd7, site_id)
     comment = []
