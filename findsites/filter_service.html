@@ -1,32 +1,48 @@
 <html>
-<style>
-  body {
-    font-size: 15pt;
-    font-family: arial;
-  }
-</style>
+  <style>
+    body {
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
 
-<body>
-  <form method="POST" action="/logout">
-  <input type="submit" value="Logout"><br>
-  </form>
+  <body>
+    <form method="POST" action="/logout">
+      <input type="submit" value="Logout" /><br />
+    </form>
 
-  <h1>Find COVID-19 Service Site</h1>
+    <h1>Find COVID-19 Service Site</h1>
 
-  <form method="POST" action="/filter_service">
-    <p>5-digit Zip Code: <input type="text" name="zip" required pattern="[0-9]{5}" placeholder="E.g. 10032"></p>
-    <p>Service Type: <br>
-      
-      <label><input type="checkbox" id="service" name="vacc"> Vaccination </label> <br>
-      <label><input type="checkbox" id="service" name="test"> Covid-19 Testing</label> <br>
-      <label><input type="checkbox" id="service" name="anti"> Covid-19 Antibody Testing</label>
-    </p>
+    <form method="POST" action="/filter_service">
+      <p>
+        5-digit Zip Code:
+        <input
+          type="text"
+          name="zip"
+          required
+          pattern="[0-9]{5}"
+          placeholder="E.g. 10032"
+        />
+      </p>
+      <p>
+        Service Type: <br />
 
-    <input type="submit" value="Search for COVID-19 Vaccines">
-    
-  </form>
-  
+        <label
+          ><input type="checkbox" id="service" name="vacc" /> Vaccination
+        </label>
+        <br />
+        <label
+          ><input type="checkbox" id="service" name="test" /> Covid-19
+          Testing</label
+        >
+        <br />
+        <label
+          ><input type="checkbox" id="service" name="anti" /> Covid-19 Antibody
+          Testing</label
+        >
+      </p>
 
-</body>
-
+      <input type="submit" value="Search for COVID-19 Service" />
+    </form>
+  </body>
 </html>
