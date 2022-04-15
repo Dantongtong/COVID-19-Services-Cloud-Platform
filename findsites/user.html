@@ -1,5 +1,5 @@
 <html>
-  <title>Login</title>
+<title>Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <style>
@@ -7,99 +7,113 @@
     font-size: 15pt;
     font-family: arial;
   }
-		table {
-      width:50%;
-			border:1px none #ffffff;
-			border-collapse:collapse;
-			padding:5px;
-		}
-		table th {
-			border:1px none #ffffff;
-			padding:5px;
-			background: #f0f0f0;
-			color: #313030;
-		}
-		table td {
-			border:1px none #ffffff;
-			text-align:center;
-			padding:5px;
-			background: #ffffff;
-			color: #313030;
-		}
+
+  table {
+    border: 1px none #ffffff;
+    border-collapse: collapse;
+    padding: 5px;
+  }
+
+  table th {
+    border: 1px none #ffffff;
+    padding: 5px;
+    background: #f0f0f0;
+    color: #313030;
+  }
+
+  table td {
+    border: 1px none #ffffff;
+    text-align: center;
+    padding: 5px;
+    background: #ffffff;
+    color: #313030;
+  }
 </style>
 
 <body>
   <form method="POST" action="/logout">
-  <input type="submit" value="Logout"><br>
+    <input type="submit" value="Logout"><br>
   </form>
 
-  <h1>This is <strong>{{name}}</strong>'s Home Page!</h1>
-  
- <h4>Basic</h4>
-<button onclick="document.getElementById('profile').style.display='block'">Profile</button><br>
+  <h1>This is <strong>{{info[0]['name']}}</strong>'s Home Page!</h1>
+
+  <h4>Basic</h4>
+  <button onclick="document.getElementById('profile').style.display='block'">Profile</button><br>
   <hr>
   <h4>Vaccine Appointments</h4>
   <button onclick="document.getElementById('apt').style.display='block'">My Appointments</button>
-    <button onclick={{url_for('appointment')}}>New Appointment</button><br>
-  
+  <a href={{url_for('appointment',site_id="2294")}}><button>New Appointment</button></a><br>
+
   <hr>
   <h4>Sites</h4>
-  <button onclick="{{url_for(/filter_service)}}">Find a Site Today</button><br>
-  
+  <a href='/filter'><button>Find a Site Today</button></a><br>
+
   <div id="profile" class="w3-modal">
     <div class="w3-modal-content w3-card-4" style="max-width:600px">
       <div class="w3-center"><br>
         <span onclick="document.getElementById('profile').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
-        
-    <table>
-      <h6>User Profile</h6>
-    <tbody>
-      <tr><td>&nbsp;User id</td><td>{{info_user[0]}}&nbsp;</td></tr>
-      <tr><td>&nbsp;User Name</td><td>{{info_user[1]}}&nbsp;</td></tr>
-      <tr><td>&nbsp;Date of Birth</td><td>{{info_user[2]}}&nbsp;</td></tr>
-      <tr><td>&nbsp;Address</td><td>{{info_user[3]}}&nbsp;</td></tr>
-      <tr><td>&nbsp;Zip</td><td>{{info_user[4]}}&nbsp;</td></tr>
-    </tbody>
-  </table>
-     </div>   
-    </div> 
-  </div>      
-        
+
+        <table>
+          <h6>User Profile</h6>
+          <tbody>
+            <tr>
+              <td>&nbsp;User id</td>
+              <td>{{info[0]['user_id']}}&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;User Name</td>
+              <td>{{info[0]['name']}}&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;Date of Birth</td>
+              <td>{{info[0]['dof']}}&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;Address</td>
+              <td>{{info[0]['address']}}&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;Zip</td>
+              <td>{{info[0]['zip']}}&nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
   <div id="apt" class="w3-modal">
     <div class="w3-modal-content w3-card-4" style="max-width:800px">
       <div class="w3-center"><br>
         <span onclick="document.getElementById('apt').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
         <table>
-		<thead>
-			<tr>
-				<th>ID</th>
-				<th>Date</th>
-				<th>Time</th>
-				<th>Vaccine</th>
-				<th>Site</th>
-				<th>User</th>
-			</tr>
-		</thead>
-		<tbody>
-      {% for item in data %}
-			<tr>
-				<td>item['appoint_id']</td>
-				<td>item['date']</td>
-				<td>item['time']</td>
-				<td>item['brand']</td>
-				<td>item['site']</td>
-				<td>item['user']</td>
-			</tr>
-      {% endfor %}
-		</tbody>
-	</table>
-        
-     </div>   
-    </div> 
-  </div> 
-  
-  
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Vaccine</th>
+              <th>Site</th>
+              <th>User</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in apt %}
+            <tr>
+              <td>{{item['appoint_id']}}</td>
+              <td>{{item['date']}}</td>
+              <td>{{item['time']}}</td>
+              <td>{{item['brand']}}</td>
+              <td><a href={{url_for('site_detail',site_id=item['site_id'])}}>{{item['site']}}</td>
+              <td>{{item['user']}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
 
 </body>
 

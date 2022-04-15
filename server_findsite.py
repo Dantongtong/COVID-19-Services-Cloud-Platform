@@ -103,11 +103,34 @@ def index():
         return render_template("admin.html")
     else:
         user_id = session.get('user_id')
-        cmd1 = 
         
-        return render_template("user.html")
+        cmd1 = """
+            SELECT * FROM users WHERE user_id = :user_id
+        """
+        cursor = g.conn.execute(text(cmd1),user_id=user_id)
+#         info = cursor.mappings().all()
+        info = []
+        for result in cursor:
+            info.append(result)
+        cursor.close()
+        
+        cmd2 = """
+            SELECT A.appoint_id, A.date, A.time, V.brand, S.site_id, S.name AS site, U.name AS user
+            FROM appointment A, vaccine V, users U, site S
+            WHERE A.vaccine_id=V.vaccine_id AND A.user_id=U.user_id AND A.site_id=S.site_id AND A.user_id = %s
+        """
+        cursor = g.conn.execute(cmd2, user_id)
+#         apt = cursor.mappings().all()
+        apt = []
+        for result in cursor:
+            apt.append(result)
+        cursor.close()
+        
+        context = dict(info=info, apt=apt)
+        
+        return render_template("user.html",**context)
 
-@app.route('/appointment/<site_id>', methods=['POST'])
+@app.route('/appointment/<site_id>', methods=['GET','POST'])
 def appointment(site_id):
   context = dict(site_id = site_id)
   return render_template("appointment.html",**context)
@@ -148,7 +171,7 @@ def add_comment(site_id):
     return redirect(url_for('site_detail',site_id=site_id))
 
 # Filter the service type for sites
-@app.route('/filter_service', methods=['POST'])
+@app.route('/filter_service', methods=['GET','POST'])
 def filter_service():
   all = request.form
   print( all )
@@ -431,6 +454,7 @@ def login():
         cursor = g.conn.execute(cmd % str(name))
         print(cmd % name)
         user_id = cursor.mappings().all()
+        user_id = user_id[0]['user_id']
         cursor.close()
         print(user_id)
         session['user_id'] = user_id
