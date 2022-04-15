@@ -2,11 +2,11 @@
 
 """
 Columbia W4111 Intro to databases
-Example webserver
+Submitted webserver
 
 To run locally
 
-    python server.py
+    python server_findsite.py
 
 Go to http://localhost:8111 in your browser
 
@@ -27,43 +27,15 @@ from flask import Flask, flash, request, render_template, g, redirect, url_for, 
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'findsites')
 app = Flask(__name__, template_folder=tmpl_dir)
-# app._static_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
 app.secret_key = "27eduCBA09"
 
-
-
-# XXX: The Database URI should be in the format of: 
-#
-#     postgresql://USER:PASSWORD@<IP_OF_POSTGRE_SQL_SERVER>/<DB_NAME>
-#
-# For example, if you had username ewu2493, password foobar, then the following line would be:
-#
-#     DATABASEURI = "postgresql://ewu2493:foobar@<IP_OF_POSTGRE_SQL_SERVER>/postgres"
-#
-# For your convenience, we already set it to the class database
-
-# Use the DB credentials you received by e-mail
 DB_USER = "dz2451"
 DB_PASSWORD = "7278"
 
 DB_SERVER = "w4111.cisxo09blonu.us-east-1.rds.amazonaws.com"
-
 DATABASEURI = "postgresql://"+DB_USER+":"+DB_PASSWORD+"@"+DB_SERVER+"/proj1part2"  #"/w4111" 
 
-
-#
-# This line creates a database engine that knows how to connect to the URI above
-#
 engine = create_engine(DATABASEURI)
-
-
-# # Here we create a test table and insert some values in it
-# engine.execute("""DROP TABLE IF EXISTS test;""")
-# engine.execute("""CREATE TABLE IF NOT EXISTS test (
-#   id serial,
-#   name text
-# );""")
-# engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 
 
 @app.before_request
@@ -108,7 +80,6 @@ def index():
             SELECT * FROM users WHERE user_id = :user_id
         """
         cursor = g.conn.execute(text(cmd1),user_id=user_id)
-#         info = cursor.mappings().all()
         info = []
         for result in cursor:
             info.append(result)
@@ -120,7 +91,6 @@ def index():
             WHERE A.vaccine_id=V.vaccine_id AND A.user_id=U.user_id AND A.site_id=S.site_id AND A.user_id = %s
         """
         cursor = g.conn.execute(cmd2, user_id)
-#         apt = cursor.mappings().all()
         apt = []
         for result in cursor:
             apt.append(result)
@@ -137,6 +107,8 @@ def appointment(site_id):
 
 @app.route('/filter')
 def filter():
+    if not session.get('logged_in'):
+        return redirect('/')
     return render_template("filter_service.html")
 
 @app.route('/edit_profile', methods=['POST'])
@@ -207,6 +179,9 @@ def filter_service():
 
 @app.route('/site_map')
 def site_map():
+    if not session.get('logged_in'):
+        return redirect('/')
+    
     zip = session.get('zip',None)
     new_filter = session.get('new_filter',None)
     print(zip,new_filter)
@@ -239,8 +214,6 @@ def site_map():
     serv_query = " OR ".join(service_query)
     print(serv_query)
     
-    ###??? vaccine supply not added yet ####
-    
     filter = []
     if "vacc" in serv_id:
         for f in vacc:
@@ -268,7 +241,6 @@ def site_map():
     ###??? how to use safe insert without '' ###
     cursor = g.conn.execute( cmd % (service_input, zip, serv_query, filter) )
 #     cursor = g.conn.execute( cmd, service_input=service_input, zip=zip, serv_query=serv_query, filter=filter )    
-#     rows = cursor.mappings().all()
     rows = []
     for result in cursor:
         rows.append(dict(site_id=result['site_id'],
@@ -304,28 +276,16 @@ def filter_bar():
 
 @app.route('/site_detail/<site_id>')
 def site_detail(site_id):
+    if not session.get('logged_in'):
+        return redirect('/')
+    
     site_id = int(site_id)
     
-#     cmd1 = """
-#         SELECT * 
-#         FROM ((site S LEFT OUTER JOIN vaccination_site VS ON S.site_id=VS.site_id) 
-#                 LEFT OUTER JOIN testing_site TS ON S.site_id=TS.site_id )
-#                 LEFT OUTER JOIN antibody_testing AT ON S.site_id=AT.site_id )
-#         WHERE S.site_id=%d
-#     """
     cmd1 = 'SELECT * FROM site WHERE site_id=%s'
     cursor = g.conn.execute(cmd1, site_id)
-#     rows = cursor.mappings().all()
     rows = []
     for result in cursor:
         rows.append(result)
-#     for result in cursor:
-#         print(result)
-#         rows = dict(site_id=result['site_id'],
-#                      name=result['name'],
-#                      address=result['address'],
-#                      website=result['website'],
-#                      call=result['call']) 
     cursor.close()
     print(rows)
     
@@ -386,7 +346,6 @@ def site_detail(site_id):
     for result in cursor:
         more2 = dict(rapid = '√' if result['rapid']=='T' else '×',
                       pcr = '√' if result['pcr']=='T' else '×') 
-#     more2 = cursor.mappings().all()
     if (more2==[]):
         more2 = [False, "Covid-19 testing not provided"]
     else:
@@ -433,14 +392,12 @@ def site_detail(site_id):
     
 @app.route('/add_comment/<site_id>', methods=['POST'])
 def add_comment(site_id):
-    ##how to get user info?
     print( request.form )
     comment = request.form['comment']
     service = request.form['service_type']
     star = request.form['star']
     print( comment, service, star )
     
-    ##??? how to get user info
     user = session.get('user_id')
     cmd1 = """
         DROP TABLE if EXISTS newid;
@@ -453,21 +410,6 @@ def add_comment(site_id):
     return redirect(url_for('site_detail',site_id=site_id))
     
 
-                    
-   
-
-# # Example of adding new data to the database
-# @app.route('/add', methods=['POST'])
-# def add():
-#   name = request.form['name']
-#   print( name )
-#   cmd = 'INSERT INTO test(name) VALUES (:name1), (:name2)';
-#   g.conn.execute(text(cmd), name1 = name, name2 = name);
-#   return redirect('/')
-
-# @app.route('/login_page')
-# def login_page():
-#     return render_template("login.html")
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -486,8 +428,6 @@ def login():
         print(cmd % name)
         for result in cursor:
             user_id = result['user_id']
-#         user_id = cursor.mappings().all()
-#         user_id = user_id[0]['user_id']
         cursor.close()
         print(user_id)
         session['user_id'] = user_id
