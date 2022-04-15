@@ -453,8 +453,10 @@ def login():
         """
         cursor = g.conn.execute(cmd , str(name))
         print(cmd % name)
-        user_id = cursor.mappings().all()
-        user_id = user_id[0]['user_id']
+        for result in cursor:
+            user_id = result['user_id']
+#         user_id = cursor.mappings().all()
+#         user_id = user_id[0]['user_id']
         cursor.close()
         print(user_id)
         session['user_id'] = user_id
