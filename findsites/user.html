@@ -37,6 +37,16 @@
   <form method="POST" action="/logout">
     <input type="submit" value="Logout"><br>
   </form>
+  
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 
   <h1>This is <strong>{{info[0]['name']}}</strong>'s Home Page!</h1>
 
@@ -45,7 +55,7 @@
   <hr>
   <h4>Vaccine Appointments</h4>
   <button onclick="document.getElementById('apt').style.display='block'">My Appointments</button>
-  <a href={{url_for('appointment',site_id="2294")}}><button>New Appointment</button></a><br>
+  <!-- <a href={{url_for('appointment',site_id="2294")}}><button>New Appointment</button></a><br> -->
 
   <hr>
   <h4>Sites</h4>

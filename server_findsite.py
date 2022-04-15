@@ -145,10 +145,11 @@ def add_appo(site_id):
   date = request.form['date']
   time = request.form['time']
   user_id = session['user_id']
-  vaccine_id = request.form.getlist('vaccine_id')[0]
+  vaccine_id = request.form['vaccine_id']
 
   cmd = 'INSERT INTO appointment VALUES ((select max(appoint_id)+1 from appointment),:date, :time, :vaccine_id, :user_id, :site_id)';
   g.conn.execute(text(cmd), date = date, time = time, vaccine_id = vaccine_id, user_id= user_id, site_id = site_id);
+  flash("Appointment Successfully added!")
   return redirect('/')
 
 def add_comment(site_id):
