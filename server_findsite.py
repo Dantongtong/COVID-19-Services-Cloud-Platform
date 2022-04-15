@@ -139,6 +139,19 @@ def appointment(site_id):
 def filter():
     return render_template("filter_service.html")
 
+@app.route('/edit_profile', methods=['POST'])
+def edit_profile():
+    user_id = request.form['user_id']
+    dof = request.form['dof']
+    address = request.form['address']
+    zip = request.form['zip']
+    
+    cmd = 'UPDATE users SET dof = %s, address = %s, zip=%s WHERE user_id = %s'
+    g.conn.execute(cmd, dof, address, zip, user_id)
+    flash("Profile Updated!")
+    return redirect('/')
+
+
 #Make an appointment
 @app.route('/add_appo/<site_id>', methods=['POST'])
 def add_appo(site_id):
@@ -152,6 +165,15 @@ def add_appo(site_id):
   flash("Appointment Successfully added!")
   return redirect('/')
 
+@app.route('/cancel_appt', methods=['POST'])
+def cancel_appt():
+    app_id = request.form['appoint_id']
+    cmd = 'DELETE FROM appointment WHERE appoint_id=%s'
+    g.conn.execute( cmd, app_id )
+    flash("Appointment cancelled successfully!")
+    return redirect('/')
+
+# @app.route('/add_comment/<site_id>', methods=['POST'])
 def add_comment(site_id):
     ##how to get user info?
     print( request.form )

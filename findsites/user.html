@@ -82,18 +82,69 @@
               <td>{{info[0]['dof']}}</td>
             </tr>
             <tr>
-              <td>&nbsp;Address</td>
+              <td>Address</td>
               <td>{{info[0]['address']}}</td>
             </tr>
             <tr>
-              <td>&nbsp;Zip</td>
+              <td>Zip</td>
               <td>{{info[0]['zip']}}</td>
             </tr>
           </tbody>
         </table>
+        
+        <button onclick="document.getElementById('profile').style.display='none';document.getElementById('edit').style.display='block'">Edit</button>
       </div>
     </div>
   </div>
+  
+  
+  <div id="edit" class="w3-modal">
+    <div class="w3-modal-content w3-card-4" style="max-width:600px">
+      <div class="w3-center"><br>
+        <span onclick="document.getElementById('edit').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+
+        <form method="POST" action="/edit_profile">
+        <table>
+          <h4><strong>User Profile</strong></h4>
+          <tbody>
+            <tr>
+              <td>User id</td>
+              <td>
+                {{info[0]['user_id']}}
+              </td>
+            </tr>
+            <tr>
+              <td>User Name</td>
+              <td>{{info[0]['name']}}</td>
+            </tr>
+            <tr>
+              <td>Date of Birth</td>
+              <td>
+                <input type="date" name="dof" required  value={{info[0]['dof']}}>
+              </td>
+            </tr>
+            <tr>
+              <td>Address</td>
+              <td>
+                <input type="text" name="address" required  value={{info[0]['address']}}>
+              </td>
+            </tr>
+            <tr>
+              <td>Zip</td>
+              <td>
+                <input type="text" name="zip" required  value={{info[0]['zip']}}>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <input type="hidden" id="userID" name="user_id" value={{info[0]['user_id']}}>
+          <input type="submit" value="Update">
+          
+          </form>
+      </div>
+    </div>
+  </div>
+  
 
   <div id="apt" class="w3-modal">
     <div class="w3-modal-content w3-card-4" style="max-width:800px">
@@ -108,6 +159,7 @@
               <th>Vaccine</th>
               <th>Site</th>
               <th>User</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -119,6 +171,12 @@
               <td>{{item['brand']}}</td>
               <td><a href={{url_for('site_detail',site_id=item['site_id'])}}>{{item['site']}}</td>
               <td>{{item['user']}}</td>
+              <td>
+                <form method="POST" action="/cancel_appt">
+                  <input type="hidden" id="apptID" name="appoint_id" value={{item['appoint_id']}}>
+    <input type="submit" value="cancel"><br>
+  </form>
+              </td>
             </tr>
             {% endfor %}
           </tbody>
