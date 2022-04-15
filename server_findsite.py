@@ -449,7 +449,7 @@ def login():
     elif request.form['psw'] == 'user' and name == 'user':
         session['logged_in'] = True
         cmd = """
-            SELECT user_id FROM users WHERE name = '%s'
+            SELECT user_id FROM users WHERE name = %s
         """
         cursor = g.conn.execute(cmd , str(name))
         print(cmd % name)
